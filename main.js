@@ -357,13 +357,14 @@ function animate() {
     //   wallArray.shift();
     // }
     //for (let i = 0; i < wallArray.length; i++) {
-    wallArray[0].position.z += .0005;
+    wallArray[0].position.z += .00005;
     //}
     if (wallArray[0].position.z >= 11) {
       
       scene.remove(wallArray[0]);
       //wallArray.shift();
-
+      console.log("wall array length post removal:")
+      console.log(wallArray.length);
     }
 
     // if (wallArray.length > 0) {
