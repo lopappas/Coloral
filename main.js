@@ -352,12 +352,12 @@ function animate() {
     // for (let element of wallArray) {
     //   element.position.z += 0.1;
 
-    // }
+    // }S
     // if (element.podsition.z >= 11) {
     //   wallArray.shift();
     // }
-    //for (let i = 0; i < wallArray.length; i++) {
-    wallArray[0].position.z += .005;
+    //for (let i = 0; i < wallArray.lengSth; i++) {
+    wallArray[0].position.z += .0005;
     //}
     if (wallArray[0].position.z >= 11) {
       
