@@ -357,7 +357,7 @@ function animate() {
     //   wallArray.shift();
     // }
     //for (let i = 0; i < wallArray.length; i++) {
-    wallArray[0].position.z += .00005;
+    wallArray[0].position.z += .005;
     //}
     if (wallArray[0].position.z >= 11) {
       
