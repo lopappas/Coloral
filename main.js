@@ -352,18 +352,19 @@ function animate() {
     // for (let element of wallArray) {
     //   element.position.z += 0.1;
 
-    // }
+    // }S
     // if (element.podsition.z >= 11) {
     //   wallArray.shift();
     // }
-    //for (let i = 0; i < wallArray.length; i++) {
+    //for (let i = 0; i < wallArray.lengSth; i++) {
     wallArray[0].position.z += .0005;
     //}
     if (wallArray[0].position.z >= 11) {
       
       scene.remove(wallArray[0]);
       //wallArray.shift();
-
+      console.log("wall array length post removal:")
+      console.log(wallArray.length);
     }
 
     // if (wallArray.length > 0) {
