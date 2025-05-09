@@ -13,6 +13,95 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 //Scene setup
 const scene = new THREE.Scene();
 
+//Speech recognition colors list
+const colors = [
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "blue",
+  "indigo",
+  "violet",
+  "chocolate",
+  "pink"
+  // …
+];
+
+//Create all wall materials
+let wall_material_list = [];
+for (let i = 0; i< colors.length; i++) {
+  wall_material_list.push(new THREE.MeshBasicMaterial( { color: colors[i] } ) );
+}
+
+const color_materials = new Map([
+  ['red', wall_material_list[0]],
+  ['orange', wall_material_list[1]],
+  ['yellow', wall_material_list[2]],
+  ['green', wall_material_list[3]],
+  ['blue', wall_material_list[4]],
+  ['indigo', wall_material_list[5]],
+  ['violet', wall_material_list[6]],
+  ['chocolate', wall_material_list[7]],
+  ['pink', wall_material_list[8]]
+])
+
+
+
+//wallTypeArray = ["LLL_Wall","LL_Wall","L_Wall","Wall","R_Wall","RR_Wall","RRR_Wall"];
+const wallMap = new Map([
+  ['LLL_Wall', -6],
+  ['LL_Wall', -4],
+  ['L_Wall', -2],
+  ['Base_Wall', 0],
+  ['R_Wall', 2],
+  ['RR_Wall', 4],
+  ['RRR_Wall', 6]
+  
+]);
+
+
+
+const gltf_loader = new GLTFLoader(); //3D mesh loader
+
+//Create all models
+var models;
+const model_urls = Array.from(wallMap.keys());
+const total_models = model_urls.length;
+console.log(model_urls);
+
+// loader.load( model_urls, function ( gltf ) {
+//   for (let i = 0; i < total_models; i++) {
+//       models.push(gltf.scene.children[0]); 
+//   }
+
+// } );
+
+
+
+
+////Create wall class
+
+class Wall {
+  constructor(name, safe, color) {
+
+    const selectWall = getRandomMapElement(wallMap);
+    const [key, value] = selectWall;
+    wall_type = `${key}`;
+    wall_safe = `${value}`;
+
+
+
+    this.name = wall_type;
+    this.safe = wall_safe;
+    this.color = wall_mat;
+  }
+
+  bark() {
+    console.log("Woof!");
+  }
+}
+
+
 
 
 ////Background: png
@@ -80,35 +169,9 @@ scene.add( sm_wall );
 
 
 
-//3D mesh loader
-const gltf_loader = new GLTFLoader();
 
 
 
-
-
-
-////Create wall class
-
-class Wall {
-  constructor(name, safe, color) {
-
-    const selectWall = getRandomMapElement(wallMap);
-    const [key, value] = selectWall;
-    wall_type = `${key}`;
-    wall_safe = `${value}`;
-
-
-
-    this.name = wall_type;
-    this.safe = wall_safe;
-    this.color = wall_mat;
-  }
-
-  bark() {
-    console.log("Woof!");
-  }
-}
 
 
 
@@ -162,19 +225,6 @@ function getRandomMapElement(map) {
 
 
 
-//wallTypeArray = ["LLL_Wall","LL_Wall","L_Wall","Wall","R_Wall","RR_Wall","RRR_Wall"];
-const wallMap = new Map([
-  ['LLL_Wall', -6],
-  ['LL_Wall', -4],
-  ['L_Wall', -2],
-  ['Base_Wall', 0],
-  ['R_Wall', 2],
-  ['RR_Wall', 4],
-  ['RRR_Wall', 6]
-  
-]);
-
-
 
 ////Create Wall
 let wallArray = [];
@@ -198,7 +248,7 @@ function spawnWall() {
 
 
 
-let wall_model = "";
+  let wall_model = "";
   gltf_loader.load( 'objs/' + wall_type + '.glb', function ( gltf ) {
     //console.log(gltf.scene.children);
     wall_model = gltf.scene.children[0]; 
@@ -213,9 +263,6 @@ let wall_model = "";
 
     //gltf.scene.children[0].material = 
     
-    console.log(gltf);
-    console.log(typeof gltf);
-    console.log(wall_model);
     scene.add( wall_model);
     wallArray.push(wall_model);
     //wall_to_add = gltf.scene.children[0];
@@ -265,7 +312,7 @@ let delta = 0;
 const direction = new THREE.Vector3(0, 0, 1);
 const speed = 2000; // units a second - 2 seconds
 let off = false;
-const first_wall_time = 5;
+let wall_checkpoint = 6;
 let wall_time_change = 5;
 let wall_timer = 5;
 let total_walls = 0;
@@ -277,6 +324,7 @@ let total_walls = 0;
 
 //Animate function
 function animate() {
+  requestAnimationFrame( animate );
   renderer.render( scene, camera );
 
   delta = clock.getDelta();
@@ -287,16 +335,20 @@ function animate() {
 
   //Create wall
   if (time > wall_timer) {
-    wall_time_change -= .2;
-    wall_timer =  first_wall_time + wall_time_change;
+    wall_checkpoint = time;
+    //wall_time_change -= .2;
+    wall_timer =  wall_checkpoint + wall_time_change;
     spawnWall();
 
+    // console.log("wall_timer: ")
+    // console.log(wall_timer);
    }
 
 
   if (wallArray.length > 0) {
-    console.log("Array is greater than 1");
-    console.log(wallArray);
+    // console.log("Array is: ");
+    // console.log(wallArray.length);
+    // console.log(wallArray);
     // for (let element of wallArray) {
     //   element.position.z += 0.1;
 
@@ -304,13 +356,13 @@ function animate() {
     // if (element.podsition.z >= 11) {
     //   wallArray.shift();
     // }
-    for (let i = 0; i < wallArray.length; i++) {
-      wallArray[i].position.z += .05;
-    }
+    //for (let i = 0; i < wallArray.length; i++) {
+    wallArray[0].position.z += .0005;
+    //}
     if (wallArray[0].position.z >= 11) {
       
       scene.remove(wallArray[0]);
-      wallArray.shift();
+      //wallArray.shift();
 
     }
 
@@ -425,21 +477,7 @@ const SpeechRecognitionEvent =
 
 
 
-//Recognized colors
-const colors = [
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "blue",
-  "indigo",
-  "violet",
-  "chocolate",
-  "pink"
-  // …
-];
-
-
+//uses color list
 const grammar = "#JSGF V1.0; grammar colors; public <color> = aqua | azure | beige | bisque | black | blue | brown | chocolate | coral | pink;";//[":#JSGF V1.0; grammar colors; public <color> = " + colors].join(" | ") + "};";
 console.log("grammar");
 console.log(grammar);
